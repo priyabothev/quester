@@ -22,20 +22,27 @@ public class FruitProvider {
     private static final Logger log = LogManager.getLogger(FruitProvider.class);
 
     RestTemplate restTemplate = new RestTemplateInitializer().getRestTemplate();
-    final String baseUrl = "https://f8776af4-e760-4c93-97b8-70015f0e00b3.mock.pstmn.io/fruits";
+    final String baseUrl = "https://942384f8-3bde-4c28-afc1-d0d3b7045786.mock.pstmn.io/fruits";
 
     /**
      * This method is used to get fruit list from provider
      * @return - this statement will return fruit list
      * @throws URISyntaxException
      */
-    public List<FoodDTO> getFruitListFromProvider() throws URISyntaxException {
-        ResponseEntity<FoodDTO[]> result = restTemplate.getForEntity(new URI(baseUrl), FoodDTO[].class);
-        List<FoodDTO> fruitList = new ArrayList<>();
-        if (result.getStatusCode().equals(HttpStatus.OK)) {
-            log.info("Fruit provider api response: {}",result.getBody());
-            fruitList = Arrays.asList(result.getBody());
-        }
+    public List<FoodDTO> getFruitListFromProvider() throws URISyntaxException, Exception {
+    	 List<FoodDTO> fruitList = new ArrayList<>();
+    	try {
+	        ResponseEntity<FoodDTO[]> result = restTemplate.getForEntity(new URI(baseUrl), FoodDTO[].class);
+	       
+	        if (result.getStatusCode().equals(HttpStatus.OK)) {
+	            log.info("Fruit provider api response: {}",result.getBody());
+	            fruitList = Arrays.asList(result.getBody());
+	        }
+    	}catch (Exception e) {
+			// TODO: handle exception
+    		log.error("Error occured while calling Fruit Provider API : {}", e);
+    		throw e;
+		}
         return fruitList;
     }
 }

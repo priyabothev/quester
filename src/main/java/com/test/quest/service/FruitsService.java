@@ -29,7 +29,7 @@ public class FruitsService {
      * @param quantity used to fetch list of fruits
      * @return list of fruits for given quantity
      */
-    public List<FoodDTO> searchForFruits(int quantity) {
+    public List<FoodDTO> searchForFruits(int quantity) throws Exception {
         log.info("Fetching fruit list for quantity: {}", quantity);
         List<Fruit> listOfFruits = fruitsRepository.findByQuantityLessThanEqual(quantity);
         List<FoodDTO> foodList = new ArrayList<>();
@@ -41,8 +41,9 @@ public class FruitsService {
             FruitProvider fruitProvider = new FruitProvider();
             try {
                 foodList = fruitProvider.getFruitListFromProvider();
-            } catch (URISyntaxException e) {
-                System.out.println(e.getMessage());
+            } catch (Exception e) {
+                log.error("Error while calling Fruit client : {}", e);
+                throw e;
             }
         }
 

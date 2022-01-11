@@ -4,6 +4,9 @@ import com.test.quest.client.GrainProvider;
 import com.test.quest.dto.FoodDTO;
 import com.test.quest.model.Grain;
 import com.test.quest.repository.GrainsRepository;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class GrainService {
+	private static final Logger log = LogManager.getLogger(FruitsService.class);
     @Autowired
     private GrainsRepository grainsRepository;
 
@@ -25,7 +29,8 @@ public class GrainService {
      * @param quantity used to fetch list of grains
      * @return list of grains for given quantity
      */
-    public List<FoodDTO> searchForGrains(int quantity) {
+    public List<FoodDTO> searchForGrains(int quantity) throws Exception {
+    	log.info("Fetching grain list for quantity: {}", quantity);
         List<Grain> grainList = grainsRepository.findByQuantityLessThanEqual(quantity);
         List<FoodDTO> foodList = new ArrayList<>();
         if (!grainList.isEmpty()) {
@@ -35,7 +40,8 @@ public class GrainService {
             try {
                 foodList = grainProvider.getGrainListFromProvider();
             } catch (URISyntaxException e) {
-                System.out.println(e.getMessage());
+            	log.error("Error while calling grain client : {}", e);
+                throw e;
             }
         }
 

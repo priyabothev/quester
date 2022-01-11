@@ -42,14 +42,18 @@ public class FoodQuesterController {
     @GetMapping(value = "quest/{qty}")
     public ResponseEntity<List<FoodDTO>> questForFood(@PathVariable int qty) {
         List<FoodDTO> finalList = new ArrayList<>();
-        finalList.addAll(fruitsService.searchForFruits(qty));
-        finalList.addAll(vegetableService.searchForVegetables(qty));
-        finalList.addAll(grainService.searchForGrains(qty));
-        finalList = finalList.stream().filter(f -> f.getQty() <= qty).sorted(Comparator.comparing(FoodDTO::getName)).collect(Collectors.toList());
-        if(finalList.isEmpty()){
-            log.error("there are no items found for given quantity");
-            return new ResponseEntity("No items found",HttpStatus.NOT_FOUND);
-        }
+        try {
+	        finalList.addAll(fruitsService.searchForFruits(qty));
+	        finalList.addAll(vegetableService.searchForVegetables(qty));
+	        finalList.addAll(grainService.searchForGrains(qty));
+	        finalList = finalList.stream().filter(f -> f.getQty() <= qty).sorted(Comparator.comparing(FoodDTO::getName)).collect(Collectors.toList());
+	        if(finalList.isEmpty()){
+	            log.error("there are no items found for given quantity");
+	            return new ResponseEntity("No items found",HttpStatus.NOT_FOUND);
+	        }
+        }catch (Exception e) {
+        	return new ResponseEntity("Something went wrong with your request, pls try after sometime",HttpStatus.NOT_FOUND);
+		}
         return new ResponseEntity<>(finalList, HttpStatus.OK);
     }
 }
