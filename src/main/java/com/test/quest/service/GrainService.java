@@ -1,19 +1,19 @@
 package com.test.quest.service;
 
-import com.test.quest.client.GrainProvider;
-import com.test.quest.dto.FoodDTO;
-import com.test.quest.model.Grain;
-import com.test.quest.repository.GrainsRepository;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.test.quest.client.FoodProvider;
+import com.test.quest.dto.FoodDTO;
+import com.test.quest.model.Grain;
+import com.test.quest.repository.GrainsRepository;
 
 /**
  * This service is used for grain related operations
@@ -36,12 +36,11 @@ public class GrainService {
         if (!grainList.isEmpty()) {
             foodList = grainList.stream().map(f -> new FoodDTO(f.getName(), f.getQuantity())).collect(Collectors.toList());
         } else {
-            GrainProvider grainProvider = new GrainProvider();
+        	FoodProvider grainProvider=new FoodProvider();
             try {
-                foodList = grainProvider.getGrainListFromProvider();
+                foodList = grainProvider.getFoodListFromProvider("grain");
             } catch (URISyntaxException e) {
             	log.error("Error while calling grain client : {}", e);
-                throw e;
             }
         }
 

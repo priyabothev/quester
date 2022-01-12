@@ -1,20 +1,20 @@
 package com.test.quest.service;
 
 
-import com.test.quest.client.VegetableProvider;
-import com.test.quest.dto.FoodDTO;
-import com.test.quest.model.Vegetable;
-import com.test.quest.repository.VegetablesRepository;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.test.quest.client.FoodProvider;
+import com.test.quest.dto.FoodDTO;
+import com.test.quest.model.Vegetable;
+import com.test.quest.repository.VegetablesRepository;
 
 /**
  * This service is used for vegetable related operations
@@ -37,12 +37,11 @@ public class VegetableService {
         if (!vegetableList.isEmpty()) {
             foodList = vegetableList.stream().map(f -> new FoodDTO(f.getName(), f.getQuantity())).collect(Collectors.toList());
         } else {
-            VegetableProvider vegetableProvider = new VegetableProvider();
+        	FoodProvider vegetableProvider=new FoodProvider();
             try {
-                foodList = vegetableProvider.getVegetableListFromProvider();
+                foodList = vegetableProvider.getFoodListFromProvider("vegetable");
             } catch (URISyntaxException e) {
             	log.error("Error while calling vagetable client : {}", e);
-                throw e;
             }
         }
         return foodList;
